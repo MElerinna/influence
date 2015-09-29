@@ -10,57 +10,62 @@
     }
     img {
       cursor: pointer;
-      width: 300px;
+      width: 200px;
+      border: 2px solid black;
     }
-    img:hover{
-      border: 4px solid blue;
+    img:hover {
+      border: 2px solid blue;
     }
-    </style>
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-  <h1>What is your favorite music ?</h1>
+<h1>What is your favorite music ?</h1>
 
-  <div class="choice one">
-    <div class="">
-      <img src="http://assets.rollingstone.com/assets/images/video/lynyrd-skynyrd-channel-jimi-hendrix-in-the-studio-20120816/rectangle.jpg" alt="lynyrd skynyrd">
-    </div>
-    Lynyrd Skynyrd
-    <span id="lynyrd_skynyrd"></span>
-  </div>
-
-  <div class="choice two">
-    <div class="">
-      <img src="http://www.hardforce.fr/img/uploads/Posts/2014/10/HardForce-blog-17.jpg" alt="judas priest">
-    </div>
-    Judas Priest
-     <span id="judas_priest"></span>
-  </div>
+<div class="choice left">
+  <img>
+  <div class="caption"></div>
+  <div class="total"></div>
+</div>
+<div class="choice right">
+  <img>
+  <div class="caption"></div>
+  <div class="total"></div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
-
-var socket = io();
-  $(document).ready(function(){
-    $('img').hover(function(){
-      var what = this.getAttribute('alt');
-      console.log(what);
-      socket.emit('choice', what);
-    },function(){
-    })
+  var socket = io();
+  $(function () {
+    // detect mouse overs
+    $('.choice').hover(onhover,offHover);
+    function onhover() {
+      socket.emit('onhover', rightleft($(this)));
+    }
+    function offHover(){
+      socket.emit('offhover',rightleft($(this)));
+    }
   });
-  socket.on('message', function (body) {
-    console.log('from server ' + body);
+  // Return if the element is left || right
+  function rightleft(element){
+    var what = 'left';
+    if(element.hasClass('right')) {
+      what = 'right';
+    }
+    return what;
+  }
+  // update total
+  socket.on('total', function (votes) {
+    $(".left .total").html(votes.left.total);
+    $(".right .total").html(votes.right.total);
   });
-  socket.on('total',function(votes){
-    $('#lynyrd_skynyrd').html(votes['lynyrd skynyrd']);
-    $('#judas_priest').html(votes['judas priest']);
-  })
-
-
-
-
-
+  // update the whole vote
+  socket.on('votes', function (votes) {
+    $(".left img").prop('src', votes.left.src);
+    $(".left .caption").html(votes.left.name);
+    $(".right img").prop('src', votes.right.src);
+    $(".right .caption").html(votes.right.name);
+  });
 </script>
 
 </body>
