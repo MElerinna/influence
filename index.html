@@ -10,39 +10,58 @@
     }
     img {
       cursor: pointer;
+      width: 300px;
     }
-  </style>
+    img:hover{
+      border: 4px solid blue;
+    }
+    </style>
 </head>
 <body>
   <h1>What is your favorite music ?</h1>
 
   <div class="choice one">
     <div class="">
-      <img src="http://blog.ticketmaster.co.uk/wp-content/uploads/2015/08/one-direction-split-2015.jpg" alt="one direction">
+      <img src="http://assets.rollingstone.com/assets/images/video/lynyrd-skynyrd-channel-jimi-hendrix-in-the-studio-20120816/rectangle.jpg" alt="lynyrd skynyrd">
     </div>
-    One Direction
+    Lynyrd Skynyrd
+    <span id="lynyrd_skynyrd"></span>
   </div>
 
   <div class="choice two">
     <div class="">
-      <img src="http://cdn-img.instyle.com/sites/default/files/styles/428xflex/public/images/2012/TRANSFORMATIONS/2009-Justin-Bieber-400_0.jpg?itok=oD8Yh7Ec" alt="justin bieber">
+      <img src="http://www.hardforce.fr/img/uploads/Posts/2014/10/HardForce-blog-17.jpg" alt="judas priest">
     </div>
-    Justin
+    Judas Priest
+     <span id="judas_priest"></span>
   </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+
 var socket = io();
 window.addEventListener('load', function () {
   var choices = document.querySelectorAll('img');
   for (var i = 0; i < choices.length; i++) {
-    choices[i].addEventListener('click', function () {
+    choices[i].addEventListener('mouseover', function () {
       var what = this.getAttribute('alt');
       console.log(what);
       socket.emit('choice', what);
     });
   }
 });
+socket.on('message', function (body) {
+  console.log('from server ' + body);
+});
+socket.on('total', function (votes) {
+  document.querySelector('#lynyrd_skynyrd').innerHTML = votes['lynyrd skynyrd'];
+  document.querySelector('#judas_priest').innerHTML = votes['judas priest'];
+})
+
+
+
+
+
 </script>
 
 </body>

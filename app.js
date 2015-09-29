@@ -11,13 +11,29 @@ app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
 });
 
+var votes = {
+	'lynyrd skynyrd': 0,
+	'judas priest': 0
+};
+
 io.on('connection', function(socket){
-	console.log('a user connected');
-	socket.on('choice', function(what){
-		console.log('chosen: ' + what);
-	});
+  socket.emit('message', 'welcome');
+
+
+  console.log('a user connected');
+  socket.on('choice', function(what){
+    if (what === 'lynyrd skynyrd') {
+      votes['lynyrd skynyrd']++;
+    } else {
+      votes['judas priest']++;
+    }
+    socket.emit('total', votes);
+  });
 });
 
 http.listen(3000, function(){
 	console.log('listening on *:3000');
 });
+
+
+
