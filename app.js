@@ -2,6 +2,7 @@ var io = require('socket.io');
 
 var express = require('express');
 var app = express();
+var choices = require('./choices.json');
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -10,6 +11,12 @@ app.get('/', function(req, res){
 	//
 	res.sendFile(__dirname + '/index.html');
 });
+
+var start = function (i) {
+
+};
+
+start(0);
 
 var votes = {
 	'lynyrd skynyrd': 0,

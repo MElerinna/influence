@@ -37,26 +37,25 @@
   </div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
 
 var socket = io();
-window.addEventListener('load', function () {
-  var choices = document.querySelectorAll('img');
-  for (var i = 0; i < choices.length; i++) {
-    choices[i].addEventListener('mouseover', function () {
+  $(document).ready(function(){
+    $('img').hover(function(){
       var what = this.getAttribute('alt');
       console.log(what);
       socket.emit('choice', what);
-    });
-  }
-});
-socket.on('message', function (body) {
-  console.log('from server ' + body);
-});
-socket.on('total', function (votes) {
-  document.querySelector('#lynyrd_skynyrd').innerHTML = votes['lynyrd skynyrd'];
-  document.querySelector('#judas_priest').innerHTML = votes['judas priest'];
-})
+    },function(){
+    })
+  });
+  socket.on('message', function (body) {
+    console.log('from server ' + body);
+  });
+  socket.on('total',function(votes){
+    $('#lynyrd_skynyrd').html(votes['lynyrd skynyrd']);
+    $('#judas_priest').html(votes['judas priest']);
+  })
 
 
 
