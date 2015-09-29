@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Metal \m/</title>
+  <title>Choices \m/</title>
   <style media="screen">
     .choice {
       float: left;
@@ -21,7 +21,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-<h1>What is your favorite ?</h1>
+<h1>Choose a side !</h1>
 
 <div class="choice left">
   <img>
@@ -38,7 +38,7 @@
 <script>
   var socket = io();
   $(function () {
-    // detect mouse overs
+    // détecte le survol de la souris
     $('.choice').hover(onhover,offHover);
     function onhover() {
       socket.emit('onhover', rightleft($(this)));
@@ -47,7 +47,7 @@
       socket.emit('offhover',rightleft($(this)));
     }
   });
-  // Return if the element is left || right
+  // retourne si c'est droite/gauche
   function rightleft(element){
     var what = 'left';
     if(element.hasClass('right')) {
@@ -55,12 +55,12 @@
     }
     return what;
   }
-  // update total
+  // mise à jour du total
   socket.on('total', function (votes) {
     $(".left .total").html(votes.left.total);
     $(".right .total").html(votes.right.total);
   });
-  // update the whole vote
+  // mise à jour de tout le vote
   socket.on('votes', function (votes) {
     $(".left img").prop('src', votes.left.src);
     $(".left .caption").html(votes.left.name);

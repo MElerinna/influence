@@ -11,16 +11,28 @@ app.get('/', function(req, res){
 
 
 var votes = null;
-var start = function (i, socket) {
-  votes =  choices[i];
+var random = 0;
+
+
+// aléa
+ var start = function () {
+  random = Math.floor(Math.random()*choices.length);
+
+  votes =  choices[random];
   votes.left.total = 0;
   votes.right.total = 0;
+
+  io.sockets.emit('votes', votes);
 };
 
-start(0);
+// intervale 
+setInterval(function(){
+  start();
+},3000);
+start();
 
 io.on('connection', function(socket){
-  // send all data
+  // envoyer toutes les données
   socket.emit('votes', votes);
 
   // On hover
@@ -30,7 +42,7 @@ io.on('connection', function(socket){
     } else {
       votes.right.total++;
     }
-    socket.emit('total', votes);
+    io.sockets.emit('total', votes);
   });
 
   // Off hover
@@ -40,7 +52,7 @@ io.on('connection', function(socket){
     } else {
       votes.right.total--;
     }
-    socket.emit('total', votes);
+    io.sockets.emit('total', votes);
   })
 
 });
